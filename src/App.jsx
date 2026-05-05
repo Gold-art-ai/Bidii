@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Plus, Minus, Globe, Laptop, Palette, Star, Check, Instagram, Twitter, Youtube } from 'lucide-react';
+import { ArrowRight, Plus, Minus, Globe, Laptop, Palette, Star, Check, X, Video } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-4 bg-[#F8F7F4]/80 backdrop-blur-md border-b border-[#1A1A1A]/5' : 'py-8 bg-transparent'}`}
     >
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex justify-between items-center">
-        <a href="#" className="text-xl font-serif tracking-tight font-bold">BIDII</a>
+        <a href="#" className="text-xl font-serif tracking-tight font-bold">BIDII.</a>
         <div className="hidden md:flex items-center gap-10">
           {['Experiences', 'Host', 'Package', 'Location', 'FAQ'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} className="text-[13px] font-medium uppercase tracking-widest text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors">
@@ -460,9 +460,9 @@ const App = () => {
             <div>
               <h5 className="text-[10px] font-bold uppercase tracking-widest mb-6">Social</h5>
               <div className="flex flex-col gap-4">
-                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Instagram size={14} /> Instagram</a>
-                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Twitter size={14} /> X / Twitter</a>
-                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Youtube size={14} /> Youtube</a>
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Globe size={14} /> Instagram</a>
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><X size={14} /> X / Twitter</a>
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Video size={14} /> Youtube</a>
               </div>
             </div>
             <div className="col-span-2 md:col-span-1">
@@ -475,8 +475,8 @@ const App = () => {
           </div>
         </div>
         <div className="max-w-[1400px] mx-auto mt-20 pt-8 border-t border-[#1A1A1A]/5 flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A]">
-          <span>© 2024 Bidii Academy</span>
-          <span>Site by Antigravity</span>
+          <span>© 2026 Bidii Academy</span>
+          <span>Made by Goldy</span>
         </div>
       </footer>
     </div>
