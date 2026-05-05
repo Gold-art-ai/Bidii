@@ -1,415 +1,436 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, ArrowRight, CheckCircle2, Globe, Laptop, Palette, Play } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Plus, Minus, Globe, Laptop, Palette, Star, Check, Instagram, Twitter, Youtube } from 'lucide-react';
 
-const BidiiAcademy = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const handleMouseMove = (e) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    setMousePosition({
-      x: (clientX / innerWidth) * 20 - 10,
-      y: (clientY / innerHeight) * 20 - 10
-    });
-  };
-
-  const fadeUp = {
-    initial: { opacity: 0, y: 60 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "0px 0px -100px 0px" },
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-  };
-
-  const staggerContainer = {
-    initial: { opacity: 0 },
-    whileInView: { opacity: 1 },
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 }
-  };
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="bg-white text-[#1A3A3A] selection:bg-[#D4FF5E]" onMouseMove={handleMouseMove}>
-      
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-          <motion.div 
-            className="text-2xl font-black tracking-tighter text-[#1E5F64]"
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: -10 }}
-          >
-            BIDII
-          </motion.div>
-          <div className="hidden md:flex gap-12 font-medium text-sm text-gray-600">
-            <a href="#home" className="hover:text-[#1E5F64] transition-colors duration-300">Home</a>
-            <a href="#about" className="hover:text-[#1E5F64] transition-colors duration-300">About</a>
-            <a href="#programs" className="hover:text-[#1E5F64] transition-colors duration-300">Programs</a>
-            <a href="#contact" className="hover:text-[#1E5F64] transition-colors duration-300">Contact</a>
-          </div>
-          <motion.button 
-            className="bg-[#1E5F64] text-white px-8 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg transition-all active:scale-95"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Apply Now
-          </motion.button>
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-4 bg-[#F8F7F4]/80 backdrop-blur-md border-b border-[#1A1A1A]/5' : 'py-8 bg-transparent'}`}
+    >
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex justify-between items-center">
+        <a href="#" className="text-xl font-serif tracking-tight font-bold">BIDII</a>
+        <div className="hidden md:flex items-center gap-10">
+          {['Experiences', 'Host', 'Package', 'Location', 'FAQ'].map((item) => (
+            <a key={item} href={`#${item.toLowerCase()}`} className="text-[13px] font-medium uppercase tracking-widest text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors">
+              {item}
+            </a>
+          ))}
         </div>
-      </nav>
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-[#1A1A1A] text-[#F8F7F4] px-6 py-2.5 rounded-full text-[13px] font-semibold uppercase tracking-wider"
+        >
+          Apply Now
+        </motion.button>
+      </div>
+    </motion.nav>
+  );
+};
 
-      {/* Hero Section */}
-      <section id="home" className="min-h-screen pt-32 pb-20 px-6 flex items-center overflow-hidden relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#D4FF5E]/10 via-transparent to-[#1E5F64]/5 pointer-events-none" />
+const SectionHeading = ({ number, title, subtitle }) => (
+  <div className="mb-16 md:mb-24">
+    <motion.span 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="block text-[11px] font-bold uppercase tracking-[0.3em] text-[#7A7A7A] mb-4"
+    >
+      {number} — {subtitle}
+    </motion.span>
+    <motion.h2 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className="text-5xl md:text-7xl font-serif leading-tight"
+    >
+      {title}
+    </motion.h2>
+  </div>
+);
+
+const FAQItem = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-[#1A1A1A]/10 py-8">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center text-left group"
+      >
+        <span className="text-xl md:text-2xl font-serif">{question}</span>
+        <div className="p-2 rounded-full border border-[#1A1A1A]/10 group-hover:bg-[#1A1A1A] group-hover:text-[#F8F7F4] transition-all">
+          {isOpen ? <Minus size={20} /> : <Plus size={20} />}
+        </div>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <p className="pt-6 text-[#7A7A7A] leading-relaxed max-w-2xl">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const App = () => {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  return (
+    <div className="bg-[#F8F7F4] text-[#1A1A1A] font-sans selection:bg-[#D4FF5E] selection:text-[#1A1A1A] overflow-x-hidden">
+      <Navbar />
+
+      {/* Hero */}
+      <section ref={heroRef} className="relative h-screen flex items-center justify-center px-6 overflow-hidden">
+        <motion.div 
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="text-center z-10"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-8"
+          >
+            <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-[#7A7A7A]">
+              Premium Education — Est. 2024
+            </span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-7xl md:text-[120px] font-serif leading-[0.9] tracking-tight mb-12"
+          >
+            Bright Minds,<br />Bold Futures.
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="max-w-xl mx-auto space-y-10"
+          >
+            <p className="text-lg md:text-xl text-[#7A7A7A] leading-relaxed font-medium">
+              A boutique learning center designed to nurture the innovators, artists, and leaders of tomorrow through depth, craft, and mastery.
+            </p>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-[#1A1A1A] text-[#F8F7F4] px-10 py-5 rounded-full text-[13px] font-bold uppercase tracking-widest"
+            >
+              Apply for a Seat
+            </motion.button>
+          </motion.div>
+        </motion.div>
         
-        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center relative z-10">
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
+        {/* Background Elements */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#D4FF5E]/10 rounded-full blur-[120px]" />
+        </div>
+      </section>
+
+      {/* Intro Reveal */}
+      <section className="py-32 md:py-64 px-6 md:px-12 bg-[#1A1A1A] text-[#F8F7F4]">
+        <div className="max-w-5xl mx-auto">
+          <motion.p 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-3xl md:text-5xl font-serif leading-tight md:leading-snug"
+          >
+            This is a workshop for those who believe mastery is built slowly, intentionally, and by hand. For those who seek depth in an age of distractions. No crowds. No shortcuts. Just focus, mentorship, and the space to grow.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Programs (Sticky Scroll) */}
+      <section id="experiences" className="py-32 md:py-64 px-6 md:px-12">
+        <div className="max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-24 items-start">
+          <div className="lg:sticky lg:top-32">
+            <SectionHeading 
+              number="001" 
+              subtitle="The Experience" 
+              title="Every moment designed for depth and craft." 
+            />
+            <p className="text-xl text-[#7A7A7A] leading-relaxed max-w-md font-medium">
+              We move beyond measurements and timers. Learn to read the room, feel the progress, and work with confidence under real conditions.
+            </p>
+          </div>
+          
+          <div className="space-y-32">
+            {[
+              {
+                id: '01',
+                title: 'Little Explorers',
+                desc: 'Motor skills and emotional intelligence through tactile play and sensory arts. Master the foundations of curiosity.',
+                image: 'https://images.unsplash.com/photo-1577720643272-265a322b5e76?w=800&q=80',
+                icon: Palette
+              },
+              {
+                id: '02',
+                title: 'Tech Ninjas',
+                desc: 'Early exposure to logic, coding, and digital responsibility. Move beyond consumption into creation.',
+                image: 'https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=800&q=80',
+                icon: Laptop
+              },
+              {
+                id: '03',
+                title: 'Global Citizens',
+                desc: 'Public speaking and community project management. Developing the leaders of tomorrow, today.',
+                image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
+                icon: Globe
+              }
+            ].map((program, i) => (
+              <motion.div 
+                key={program.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="group"
+              >
+                <div className="aspect-[4/5] overflow-hidden rounded-3xl mb-8 relative">
+                  <motion.img 
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                    src={program.image} 
+                    alt={program.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-6 left-6 bg-[#F8F7F4]/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2">
+                    <program.icon size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">{program.title}</span>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <span className="font-serif text-3xl text-[#1A1A1A]/20">{program.id}</span>
+                  <div>
+                    <h3 className="text-3xl font-serif mb-4">{program.title}</h3>
+                    <p className="text-[#7A7A7A] leading-relaxed font-medium">
+                      {program.desc}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Gallery */}
+      <section className="py-32 px-6">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="grid md:grid-cols-2 gap-4 h-[600px] md:h-[800px]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative rounded-[40px] overflow-hidden group"
+            >
+              <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=1000&q=80" className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+              <div className="absolute inset-0 bg-black/20" />
+            </motion.div>
+            <div className="grid grid-rows-2 gap-4">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="relative rounded-[40px] overflow-hidden group"
+              >
+                <img src="https://images.unsplash.com/photo-1427504494963-86e0658107d1?w=1000&q=80" className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+                <div className="absolute inset-0 bg-black/20" />
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="relative rounded-[40px] overflow-hidden group"
+              >
+                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1000&q=80" className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+                <div className="absolute inset-0 bg-black/20" />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Included List */}
+      <section id="package" className="py-32 md:py-64 px-6 md:px-12 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <SectionHeading 
+            number="002" 
+            subtitle="The Details" 
+            title="What's Included in the Journey" 
+          />
+          <div className="space-y-px bg-[#1A1A1A]/10 border-y border-[#1A1A1A]/10">
+            {[
+              { title: 'Personal Guidance', desc: 'Direct access to facilitators throughout the experience.' },
+              { title: 'Curated Materials', desc: 'All tools, resources, and learning materials are provided.' },
+              { title: 'Modern Curriculum', desc: 'Blending traditional wisdom with innovative tech and arts.' },
+              { title: 'Growth Tracking', desc: 'Detailed assessment and progress reports for each student.' },
+              { title: 'Alumni Network', desc: 'Access to a community of innovators and leaders.' }
+            ].map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+                className="bg-white py-10 flex flex-col md:flex-row md:items-center justify-between gap-6"
+              >
+                <h4 className="text-2xl font-serif">{item.title}</h4>
+                <p className="text-[#7A7A7A] max-w-sm">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-32 md:py-64 px-6 md:px-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-24">
+            {[
+              {
+                quote: "The setting, the pace, the level of attention. It felt more like an apprenticeship than a class. Bidii reshaped my child's relationship with learning.",
+                author: "Sofia Klein",
+                role: "Parent & Designer"
+              },
+              {
+                quote: "I came expecting simple lessons. We left with intuition and confidence. This is not for everyone, and that’s exactly why it’s powerful.",
+                author: "Daniel Hart",
+                role: "Tech Entrepreneur"
+              }
+            ].map((t, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="flex gap-2 mb-8">
+                  {[1, 2, 3, 4, 5].map(star => <Star key={star} size={14} className="fill-[#D4FF5E] text-[#D4FF5E]" />)}
+                </div>
+                <p className="text-3xl font-serif leading-relaxed mb-10 italic text-[#1A1A1A]/80">"{t.quote}"</p>
+                <div>
+                  <p className="font-bold text-sm tracking-widest uppercase">{t.author}</p>
+                  <p className="text-[#7A7A7A] text-xs uppercase tracking-widest mt-1">{t.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-32 md:py-64 px-6 md:px-12 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <SectionHeading 
+            number="003" 
+            subtitle="Common Questions" 
+            title="Frequently Asked Questions" 
+          />
+          <div className="mt-12">
+            {[
+              { q: "Who is this for?", a: "Designed for children aged 5-15 who are curious, creative, and ready to move beyond traditional learning boundaries." },
+              { q: "How many people attend each edition?", a: "We maintain an intentional 6:1 student-to-mentor ratio to ensure depth of interaction." },
+              { q: "What is the application process?", a: "We review every application to ensure alignment with our philosophy. Success is about curiosity, not just grades." },
+              { q: "Is the curriculum certified?", a: "Yes, our facilitators are certified industry professionals and educators with over 15 years of experience." }
+            ].map((faq, i) => (
+              <FAQItem key={i} question={faq.q} answer={faq.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA / Application */}
+      <section id="host" className="py-32 md:py-64 px-6 md:px-12 bg-[#1A1A1A] text-[#F8F7F4]">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-24">
+          <div>
+            <SectionHeading 
+              number="004" 
+              subtitle="The Application" 
+              title="Ready to unlock potential?" 
+            />
+            <p className="text-xl text-[#F8F7F4]/60 leading-relaxed mb-12">
+              Participation is limited and intentionally curated. We review every application to ensure alignment, commitment, and a focused group environment.
+            </p>
+            <div className="space-y-6">
+              <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest">
+                <div className="w-10 h-10 rounded-full border border-[#F8F7F4]/20 flex items-center justify-center">
+                  <Check size={16} />
+                </div>
+                Personal Response within 48 Hours
+              </div>
+              <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest">
+                <div className="w-10 h-10 rounded-full border border-[#F8F7F4]/20 flex items-center justify-center">
+                  <Check size={16} />
+                </div>
+                Private Orientation Tour
+              </div>
+            </div>
+          </div>
+          
+          <motion.form 
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <motion.div 
-              variants={fadeUp}
-              className="inline-block"
-            >
-              <div className="bg-[#D4FF5E] text-[#1E5F64] px-6 py-2 rounded-full text-xs font-bold tracking-widest inline-block">
-                ✨ EST. 2024 • PREMIUM EDUCATION
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#F8F7F4]/40">Full Name</label>
+                <input type="text" className="w-full bg-transparent border-b border-[#F8F7F4]/20 py-4 outline-none focus:border-[#D4FF5E] transition-colors" />
               </div>
-            </motion.div>
-
-            <motion.h1 
-              variants={fadeUp}
-              className="text-7xl md:text-8xl font-black leading-[0.95] tracking-tighter"
-            >
-              <span className="text-[#1E5F64]">Bright Minds,</span>
-              <br />
-              <span className="bg-gradient-to-r from-[#1E5F64] to-teal-400 bg-clip-text text-transparent">Bold Futures.</span>
-            </motion.h1>
-
-            <motion.p 
-              variants={fadeUp}
-              className="text-xl text-gray-600 leading-relaxed max-w-lg font-medium"
-            >
-              A boutique learning center designed to nurture the innovators, artists, and leaders of tomorrow. 
-            </motion.p>
-
-            <motion.div 
-              variants={fadeUp}
-              className="flex items-center gap-6 pt-4"
-            >
-              <motion.button 
-                className="bg-[#1E5F64] text-white px-10 py-5 rounded-full flex items-center gap-3 font-semibold hover:shadow-2xl transition-all"
-                whileHover={{ scale: 1.05, gap: 20 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Explore Programs <ArrowRight size={20} />
-              </motion.button>
-              <motion.button
-                className="w-16 h-16 rounded-full bg-[#D4FF5E] text-[#1E5F64] flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Play size={24} fill="currentColor" />
-              </motion.button>
-            </motion.div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, x: 80, rotateY: -20 }}
-            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }
-          }
-            viewport={{ once: true }}
-            className="relative"
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: `perspective(1000px) rotateX(${mousePosition.y}deg) rotateY(${mousePosition.x}deg)`
-            }}
-          >
-            <div className="absolute -inset-4 bg-gradient-to-r from-[#D4FF5E] to-teal-400 rounded-[50px] blur-2xl opacity-20" />
-            <div className="aspect-[4/5] bg-gradient-to-br from-[#1E5F64] to-teal-600 rounded-[50px] overflow-hidden relative shadow-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1427504494963-86e0658107d1?w=600&h=750&fit=crop" 
-                alt="Students Learning"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1E5F64]/60 via-transparent to-transparent" />
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#F8F7F4]/40">Email Address</label>
+                <input type="email" className="w-full bg-transparent border-b border-[#F8F7F4]/20 py-4 outline-none focus:border-[#D4FF5E] transition-colors" />
+              </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 px-6 bg-[#1E5F64] text-white">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
-          {[
-            { number: '500+', label: 'Students' },
-            { number: '12', label: 'Programs' },
-            { number: '95%', label: 'Success Rate' }
-          ].map((stat, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              initial="initial"
-              whileInView="whileInView"
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="text-5xl font-black text-[#D4FF5E]">{stat.number}</div>
-              <div className="text-teal-200 mt-2 font-medium">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-32 px-6 bg-gradient-to-b from-white via-[#F8FCFD] to-white">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-          >
-            <motion.h2 
-              variants={fadeUp}
-              className="text-sm font-black tracking-[0.3em] text-[#1E5F64] mb-6 uppercase"
-            >
-              Our Philosophy
-            </motion.h2>
-            <motion.h3 
-              variants={fadeUp}
-              className="text-5xl md:text-6xl font-black leading-[1.1] text-[#1E5F64] mb-10"
-            >
-              Every child is a natural scientist and philosopher.
-            </motion.h3>
-            <motion.div 
-              variants={fadeUp}
-              className="space-y-6"
-            >
-              {[
-                { title: 'Holistic Development', desc: 'Nurturing mind, body, and social intelligence.' },
-                { title: 'Certified Mentors', desc: 'Industry-leading educators and facilitators.' },
-                { title: 'Modern Curriculum', desc: 'Blending traditional wisdom with innovation.' }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} 
-                  variants={fadeUp}
-                  className="flex gap-4 p-6 rounded-3xl border-2 border-[#D4FF5E]/30 hover:border-[#D4FF5E] hover:bg-[#D4FF5E]/5 transition-all duration-300 group"
-                >
-                  <div className="w-12 h-12 rounded-full bg-[#D4FF5E] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <CheckCircle2 size={24} className="text-[#1E5F64]" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg text-[#1E5F64]">{item.title}</h4>
-                    <p className="text-gray-500 text-sm mt-1">{item.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            className="relative group"
-          >
-            <div className="absolute -inset-6 bg-gradient-to-r from-[#D4FF5E] to-teal-400 rounded-[50px] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
-            <img 
-              src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=600&h=600&fit=crop" 
-              alt="Students collaborating"
-              className="rounded-[50px] shadow-2xl relative z-10 object-cover w-full h-full"
-            />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Programs Section */}
-      <section id="programs" className="py-32 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            variants={fadeUp}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <h2 className="text-sm font-black tracking-[0.3em] text-[#1E5F64] mb-4 uppercase">Signature Programs</h2>
-            <h3 className="text-6xl font-black text-[#1E5F64] leading-tight">
-              Curated learning paths for modern growth.
-            </h3>
-          </motion.div>
-
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            className="grid md:grid-cols-3 gap-10"
-          >
-            {[
-              {
-                icon: Palette,
-                title: 'Little Explorers',
-                desc: 'Motor skills and emotional intelligence through tactile play and sensory arts.',
-                image: 'https://images.unsplash.com/photo-1577720643272-265a322b5e76?w=500&h=600&fit=crop',
-                color: 'from-pink-400 to-rose-600'
-              },
-              {
-                icon: Laptop,
-                title: 'Tech Ninjas',
-                desc: 'Early exposure to logic, coding, and digital responsibility.',
-                image: 'https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=500&h=600&fit=crop',
-                color: 'from-blue-400 to-cyan-600'
-              },
-              {
-                icon: Globe,
-                title: 'Global Citizens',
-                desc: 'Public speaking and community project management for 10-15 year olds.',
-                image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=600&fit=crop',
-                color: 'from-purple-400 to-indigo-600'
-              }
-            ].map((program, i) => {
-              const Icon = program.icon;
-              return (
-                <motion.div
-                  key={i}
-                  variants={fadeUp}
-                  whileHover={{ y: -20 }}
-                  className="group cursor-pointer"
-                >
-                  <div className="relative mb-8 overflow-hidden rounded-[40px] h-72">
-                    <img 
-                      src={program.image}
-                      alt={program.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-br ${program.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-                  </div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-[#D4FF5E] rounded-full group-hover:scale-110 transition-transform">
-                      <Icon size={20} className="text-[#1E5F64]" />
-                    </div>
-                    <span className="font-black text-xs uppercase tracking-widest text-[#1E5F64]">{program.title}</span>
-                  </div>
-                  <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-900 transition-colors">
-                    {program.desc}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-32 px-6 bg-gradient-to-r from-[#1E5F64] to-teal-600 text-white overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <motion.div 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute w-96 h-96 bg-[#D4FF5E] rounded-full blur-3xl -top-48 -right-48"
-          />
-        </div>
-        <motion.div 
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center relative z-10"
-        >
-          <h2 className="text-6xl font-black leading-tight mb-6">
-            Ready to unlock potential?
-          </h2>
-          <p className="text-xl text-teal-100 mb-10 max-w-2xl mx-auto font-medium">
-            Join Bidii Academy and give your child the edge they need to thrive in tomorrow's world.
-          </p>
-          <motion.button
-            className="bg-[#D4FF5E] text-[#1E5F64] px-12 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Free Trial
-          </motion.button>
-        </motion.div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 px-6 bg-white">
-        <div className="max-w-7xl mx-auto bg-gradient-to-br from-[#F8FCFD] to-[#EAF4F5] rounded-[60px] p-10 lg:p-20 grid lg:grid-cols-2 gap-16">
-          <motion.div
-            variants={fadeUp}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-black text-[#1E5F64] mb-6 leading-tight">
-              Let's start the journey.
-            </h2>
-            <p className="text-lg text-teal-800 mb-12 font-medium">
-              Book a tour, meet our facilitators, and discover how Bidii can transform your child's future.
-            </p>
-            <div className="space-y-8">
-              <motion.div 
-                whileHover={{ x: 10 }}
-                className="flex items-center gap-4 text-[#1E5F64] font-bold cursor-pointer"
-              >
-                <div className="w-12 h-12 bg-[#D4FF5E] rounded-full flex items-center justify-center">
-                  <Mail size={20} />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Email</div>
-                  <div>contact@bidii.edu</div>
-                </div>
-              </motion.div>
-              <motion.div 
-                whileHover={{ x: 10 }}
-                className="flex items-center gap-4 text-[#1E5F64] font-bold cursor-pointer"
-              >
-                <div className="w-12 h-12 bg-[#D4FF5E] rounded-full flex items-center justify-center">
-                  <Phone size={20} />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Phone</div>
-                  <div>+1 (555) 000-1234</div>
-                </div>
-              </motion.div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#F8F7F4]/40">Current Skill Level / Age</label>
+              <input type="text" className="w-full bg-transparent border-b border-[#F8F7F4]/20 py-4 outline-none focus:border-[#D4FF5E] transition-colors" />
             </div>
-          </motion.div>
-
-          <motion.form 
-            variants={fadeUp}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            className="bg-white p-10 rounded-[40px] shadow-xl space-y-6"
-          >
-            <input 
-              type="text" 
-              placeholder="Your Name" 
-              className="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-[#D4FF5E] placeholder-gray-400 transition-all"
-            />
-            <input 
-              type="email" 
-              placeholder="Email Address" 
-              className="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-[#D4FF5E] placeholder-gray-400 transition-all"
-            />
-            <input 
-              type="text" 
-              placeholder="Child's Age" 
-              className="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-[#D4FF5E] placeholder-gray-400 transition-all"
-            />
-            <textarea 
-              placeholder="Tell us about your child" 
-              rows="4" 
-              className="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-[#D4FF5E] placeholder-gray-400 transition-all resize-none"
-            ></textarea>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#F8F7F4]/40">Tell us about your child</label>
+              <textarea rows="4" className="w-full bg-transparent border-b border-[#F8F7F4]/20 py-4 outline-none focus:border-[#D4FF5E] transition-colors resize-none" />
+            </div>
             <motion.button 
-              className="w-full bg-[#1E5F64] text-white py-5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-[#164a4e] transition-all"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              className="w-full bg-[#D4FF5E] text-[#1A1A1A] py-6 rounded-full font-bold uppercase tracking-[0.2em] text-[12px]"
             >
               Submit Application
             </motion.button>
@@ -417,19 +438,49 @@ const BidiiAcademy = () => {
         </div>
       </section>
 
-      <footer className="py-16 border-t border-gray-100 bg-white text-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-xs font-black tracking-widest text-gray-400 uppercase mb-4">Bidii Academy</p>
-          <p className="text-xs text-gray-300">© 2024 Future Ready Education • Designed for tomorrow's leaders</p>
-        </motion.div>
+      {/* Footer */}
+      <footer className="py-20 px-6 md:px-12 border-t border-[#1A1A1A]/5">
+        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-start gap-16 md:gap-8">
+          <div className="max-w-xs">
+            <h3 className="text-2xl font-serif mb-6">BIDII</h3>
+            <p className="text-[#7A7A7A] text-sm leading-relaxed">
+              Curated learning experiences for the next generation of global citizens and innovators.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-16">
+            <div>
+              <h5 className="text-[10px] font-bold uppercase tracking-widest mb-6">Navigation</h5>
+              <div className="space-y-4 flex flex-col">
+                {['Experiences', 'Host', 'Package', 'Location', 'FAQ'].map(item => (
+                  <a key={item} href={`#${item.toLowerCase()}`} className="text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors">{item}</a>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h5 className="text-[10px] font-bold uppercase tracking-widest mb-6">Social</h5>
+              <div className="flex flex-col gap-4">
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Instagram size={14} /> Instagram</a>
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Twitter size={14} /> X / Twitter</a>
+                <a href="#" className="flex items-center gap-2 text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors"><Youtube size={14} /> Youtube</a>
+              </div>
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <h5 className="text-[10px] font-bold uppercase tracking-widest mb-6">Legal</h5>
+              <div className="space-y-4 flex flex-col">
+                <a href="#" className="text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors">Privacy Policy</a>
+                <a href="#" className="text-sm text-[#7A7A7A] hover:text-[#1A1A1A] transition-colors">Terms of Service</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-[1400px] mx-auto mt-20 pt-8 border-t border-[#1A1A1A]/5 flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A]">
+          <span>© 2024 Bidii Academy</span>
+          <span>Site by Antigravity</span>
+        </div>
       </footer>
     </div>
   );
 };
 
-export default BidiiAcademy;
+export default App;
