@@ -120,7 +120,7 @@ const App = () => {
             className="mb-8"
           >
             <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-[#7A7A7A]">
-              Premium Education — Est. 2024
+              Premium Education — Est. 2026
             </span>
           </motion.div>
           <motion.h1 
@@ -187,26 +187,27 @@ const App = () => {
           
           <div className="space-y-32">
             {[
-              {
-                id: '01',
-                title: 'Little Explorers',
-                desc: 'Motor skills and emotional intelligence through tactile play and sensory arts. Master the foundations of curiosity.',
-                image: 'https://images.unsplash.com/photo-1577720643272-265a322b5e76?w=800&q=80',
-                icon: Palette
-              },
-              {
-                id: '02',
-                title: 'Tech Ninjas',
-                desc: 'Early exposure to logic, coding, and digital responsibility. Move beyond consumption into creation.',
-                image: 'https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=800&q=80',
-                icon: Laptop
-              },
-              {
-                id: '03',
-                title: 'Global Citizens',
-                desc: 'Public speaking and community project management. Developing the leaders of tomorrow, today.',
-                image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
-                icon: Globe
+                  {
+                    id: '01',
+                    title: 'Little Explorers',
+                    desc: 'Motor skills and emotional intelligence through tactile play and sensory arts. Master the foundations of curiosity.',
+                    image: 'https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&q=80', // kids sensory play
+                    icon: Palette
+                  },
+                  {
+                    id: '02',
+                    title: 'Tech Ninjas',
+                    desc: 'Early exposure to logic, coding, and digital responsibility. Move beyond consumption into creation.',
+                    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80', // coding/tech
+                    icon: Laptop
+                  },
+                  {
+                    id: '03',
+                    title: 'Global Citizens',
+                    desc: 'Public speaking and community project management. Developing the leaders of tomorrow, today.',
+                    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80', // teamwork/discussion
+                    icon: Globe
+
               }
             ].map((program, i) => (
               <motion.div 
