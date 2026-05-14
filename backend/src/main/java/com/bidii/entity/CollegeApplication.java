@@ -1,15 +1,10 @@
 package com.bidii.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "college_applications")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class CollegeApplication {
 
     @Id
@@ -37,8 +32,6 @@ public class CollegeApplication {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Student student;
 
     @PrePersist
@@ -56,4 +49,44 @@ public class CollegeApplication {
     public enum ApplicationStatus {
         PENDING, ACCEPTED, REJECTED, WITHDRAWN
     }
+
+    // ── Constructors ──────────────────────────────────────────────────────
+    public CollegeApplication() {}
+
+    private CollegeApplication(Builder b) {
+        this.collegeName = b.collegeName;
+        this.program     = b.program;
+        this.status      = b.status;
+        this.notes       = b.notes;
+        this.student     = b.student;
+    }
+
+    public static Builder builder() { return new Builder(); }
+
+    public static class Builder {
+        private String collegeName, program, notes;
+        private ApplicationStatus status;
+        private Student student;
+        public Builder collegeName(String v)      { collegeName = v; return this; }
+        public Builder program(String v)          { program = v;     return this; }
+        public Builder status(ApplicationStatus v){ status = v;      return this; }
+        public Builder notes(String v)            { notes = v;       return this; }
+        public Builder student(Student v)         { student = v;     return this; }
+        public CollegeApplication build()         { return new CollegeApplication(this); }
+    }
+
+    // ── Getters & Setters ─────────────────────────────────────────────────
+    public Long getId()                               { return id; }
+    public String getCollegeName()                    { return collegeName; }
+    public void setCollegeName(String v)              { this.collegeName = v; }
+    public String getProgram()                        { return program; }
+    public void setProgram(String v)                  { this.program = v; }
+    public ApplicationStatus getStatus()              { return status; }
+    public void setStatus(ApplicationStatus v)        { this.status = v; }
+    public String getNotes()                          { return notes; }
+    public void setNotes(String v)                    { this.notes = v; }
+    public LocalDateTime getAppliedAt()               { return appliedAt; }
+    public LocalDateTime getUpdatedAt()               { return updatedAt; }
+    public Student getStudent()                       { return student; }
+    public void setStudent(Student v)                 { this.student = v; }
 }

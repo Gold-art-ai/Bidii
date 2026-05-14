@@ -1,16 +1,11 @@
 package com.bidii.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "students")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Student {
 
     @Id
@@ -36,4 +31,34 @@ public class Student {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
+    // ── Constructors ──────────────────────────────────────────────────────
+    public Student() {}
+
+    private Student(Builder b) {
+        this.name = b.name;
+        this.email = b.email;
+        this.password = b.password;
+    }
+
+    public static Builder builder() { return new Builder(); }
+
+    public static class Builder {
+        private String name, email, password;
+        public Builder name(String v)     { name = v;     return this; }
+        public Builder email(String v)    { email = v;    return this; }
+        public Builder password(String v) { password = v; return this; }
+        public Student build()            { return new Student(this); }
+    }
+
+    // ── Getters & Setters ─────────────────────────────────────────────────
+    public Long getId()                        { return id; }
+    public String getName()                    { return name; }
+    public void setName(String name)           { this.name = name; }
+    public String getEmail()                   { return email; }
+    public void setEmail(String email)         { this.email = email; }
+    public String getPassword()                { return password; }
+    public void setPassword(String password)   { this.password = password; }
+    public LocalDateTime getCreatedAt()        { return createdAt; }
+    public List<CollegeApplication> getApplications() { return applications; }
 }
