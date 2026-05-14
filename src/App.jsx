@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Plus, Minus, Globe, Laptop, Palette, Star, Check, X, Video } from 'lucide-react';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+
+// ─── Protected Route Guard ────────────────────────────────────────────────────
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('bidii_token');
+  return token ? children : <Navigate to="/login" replace />;
+};
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,9 +39,10 @@ const Navbar = () => {
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={() => window.location.href = '/login'}
           className="bg-[#1A1A1A] text-[#F8F7F4] px-6 py-2.5 rounded-full text-[13px] font-semibold uppercase tracking-wider"
         >
-          Apply Now
+          Student Portal
         </motion.button>
       </div>
     </motion.nav>
@@ -93,7 +103,7 @@ const FAQItem = ({ question, answer }) => {
   );
 };
 
-const App = () => {
+const LandingPage = () => {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -143,6 +153,7 @@ const App = () => {
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/login'}
               className="bg-[#1A1A1A] text-[#F8F7F4] px-10 py-5 rounded-full text-[13px] font-bold uppercase tracking-widest"
             >
               Apply for a Seat
@@ -483,5 +494,25 @@ const App = () => {
     </div>
   );
 };
+
+// ─── Root App with Router ────────────────────────────────────────────────────
+const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      {/* Catch-all → home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  </BrowserRouter>
+);
 
 export default App;
